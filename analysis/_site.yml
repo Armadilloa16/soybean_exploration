@@ -1,7 +1,7 @@
-name: "soybean_exploration"
+name: soybean_exploration
 output_dir: ../docs
 navbar:
-  title: "soybean_exploration"
+  title: soybean_exploration
   left:
   - text: Home
     href: index.html
@@ -9,6 +9,10 @@ navbar:
     href: about.html
   - text: License
     href: license.html
+  right:
+  - icon: fa-github
+    text: Source code
+    href: https://github.com/Armadilloa16/soybean_exploration
 output:
   workflowr::wflow_html:
     toc: yes
