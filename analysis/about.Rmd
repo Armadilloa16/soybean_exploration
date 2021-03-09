@@ -7,4 +7,4 @@ editor_options:
   chunk_output_type: console
 ---
 
-Describe your project.
+In this project we dig deeper into relationships between gene presence/ absence and yield, particularly NLR genes of the recent soybean pangenome.

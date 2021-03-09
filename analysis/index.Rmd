@@ -8,4 +8,7 @@ editor_options:
   chunk_output_type: console
 ---
 
-Welcome to my research website.
+Welcome to the website summarising the soybean R-gene analysis.
+
+0. Reading in and organising data: [link](initial_data_organisation.html)
+
