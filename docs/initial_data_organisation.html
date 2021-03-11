@@ -498,16 +498,16 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomArmadilloa16soybeanexplorationtree491156a88d0f1ab85ad1fcb9d6f6f4fbea0cd978targetblank491156aa"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/Armadilloa16/soybean_exploration/tree/491156a88d0f1ab85ad1fcb9d6f6f4fbea0cd978" target="_blank">491156a</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomArmadilloa16soybeanexplorationtree190e79d1702082cb3fbb5f67e27bc15ad4ebdad9targetblank190e79da"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/Armadilloa16/soybean_exploration/tree/190e79d1702082cb3fbb5f67e27bc15ad4ebdad9" target="_blank">190e79d</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcomArmadilloa16soybeanexplorationtree491156a88d0f1ab85ad1fcb9d6f6f4fbea0cd978targetblank491156aa" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomArmadilloa16soybeanexplorationtree190e79d1702082cb3fbb5f67e27bc15ad4ebdad9targetblank190e79da" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility.
 </p>
 <p>
-The results in this page were generated with repository version <a href="https://github.com/Armadilloa16/soybean_exploration/tree/491156a88d0f1ab85ad1fcb9d6f6f4fbea0cd978" target="_blank">491156a</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
+The results in this page were generated with repository version <a href="https://github.com/Armadilloa16/soybean_exploration/tree/190e79d1702082cb3fbb5f67e27bc15ad4ebdad9" target="_blank">190e79d</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
 </p>
 <p>
 Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -567,6 +567,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/Armadilloa16/soybean_exploration/blob/190e79d1702082cb3fbb5f67e27bc15ad4ebdad9/analysis/initial_data_organisation.Rmd" target="_blank">190e79d</a>
+</td>
+<td>
+Lyron Winderbaum
+</td>
+<td>
+2021-03-11
+</td>
+<td>
+Data tidying
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/Armadilloa16/soybean_exploration/10f3745c39485b7fd2eadf16a4a6d29e53987fc8/docs/initial_data_organisation.html" target="_blank">10f3745</a>
+</td>
+<td>
+Lyron Winderbaum
+</td>
+<td>
+2021-03-11
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -635,6 +669,31 @@ dim(pav_table)</code></pre>
 <pre class="r"><code>head(names(pav_table))</code></pre>
 <pre><code>[1] &quot;Individual&quot; &quot;AB-01&quot;      &quot;AB-02&quot;      &quot;BR-01&quot;      &quot;BR-02&quot;     
 [6] &quot;BR-03&quot;     </code></pre>
+<p>Lets reorganise the data to be a little more managable</p>
+<pre class="r"><code>gene_nms = pav_table$Individual
+line_nms = names(pav_table)[-1]
+pav_table = t(pav_table[, -1])
+names(pav_table) = gene_nms
+pav_table = as.tibble(pav_table)</code></pre>
+<pre><code>Warning: `as.tibble()` is deprecated, use `as_tibble()` (but mind the new semantics).
+This warning is displayed once per session.</code></pre>
+<pre class="r"><code>names(pav_table) = gene_nms
+pav_table = cbind(line_nms, pav_table)
+names(pav_table)[1] = &#39;Line&#39;
+
+pav_table[1:4, 1:4]</code></pre>
+<pre><code>   Line GlymaLee.01G000100.1.p GlymaLee.01G000200.1.p
+1 AB-01                      1                      1
+2 AB-02                      1                      1
+3 BR-01                      1                      1
+4 BR-02                      1                      1
+  GlymaLee.01G000300.1.p
+1                      1
+2                      1
+3                      1
+4                      1</code></pre>
+<pre class="r"><code>dim(pav_table)</code></pre>
+<pre><code>[1]  1110 51415</code></pre>
 </div>
 <div id="nbs-nlr-genes" class="section level1">
 <h1>NBS / NLR Genes</h1>
@@ -683,20 +742,22 @@ groups$Group &lt;-
                &#39;Modern cultivar&#39;)
   )
 
+names(groups)[names(groups) == &#39;Data-storage-ID&#39;] = &#39;Line&#39;
+
 groups</code></pre>
 <pre><code># A tibble: 1,069 x 3
-   `Data-storage-ID` `PI-ID`   Group   
-   &lt;chr&gt;             &lt;chr&gt;     &lt;fct&gt;   
- 1 SRR1533284        PI416890  Landrace
- 2 SRR1533282        PI323576  Landrace
- 3 SRR1533292        PI157421  Landrace
- 4 SRR1533216        PI594615  Landrace
- 5 SRR1533239        PI603336  Landrace
- 6 USB-108           PI165675  Landrace
- 7 HNEX-13           PI253665D Landrace
- 8 USB-382           PI603549  Landrace
- 9 SRR1533236        PI587552  Landrace
-10 SRR1533332        PI567293  Landrace
+   Line       `PI-ID`   Group   
+   &lt;chr&gt;      &lt;chr&gt;     &lt;fct&gt;   
+ 1 SRR1533284 PI416890  Landrace
+ 2 SRR1533282 PI323576  Landrace
+ 3 SRR1533292 PI157421  Landrace
+ 4 SRR1533216 PI594615  Landrace
+ 5 SRR1533239 PI603336  Landrace
+ 6 USB-108    PI165675  Landrace
+ 7 HNEX-13    PI253665D Landrace
+ 8 USB-382    PI603549  Landrace
+ 9 SRR1533236 PI587552  Landrace
+10 SRR1533332 PI567293  Landrace
 # … with 1,059 more rows</code></pre>
 <pre class="r"><code>table(groups$Group)</code></pre>
 <pre><code>
@@ -723,6 +784,43 @@ yield</code></pre>
 # … with 759 more rows</code></pre>
 <pre class="r"><code>hist(yield$Yield)</code></pre>
 <p><img src="figure/initial_data_organisation.Rmd/yield-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-yield-1">
+Past versions of yield-1.png
+</button>
+</p>
+<div id="fig-yield-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/Armadilloa16/soybean_exploration/blob/10f3745c39485b7fd2eadf16a4a6d29e53987fc8/docs/figure/initial_data_organisation.Rmd/yield-1.png" target="_blank">10f3745</a>
+</td>
+<td>
+Lyron Winderbaum
+</td>
+<td>
+2021-03-11
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>summary(yield$Yield)</code></pre>
 <pre><code>   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
   0.080   1.630   2.180   2.188   2.740   4.480 </code></pre>
@@ -746,6 +844,43 @@ protein</code></pre>
 # … with 952 more rows</code></pre>
 <pre class="r"><code>hist(protein$Protein)</code></pre>
 <p><img src="figure/initial_data_organisation.Rmd/protein_join-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-protein_join-1">
+Past versions of protein_join-1.png
+</button>
+</p>
+<div id="fig-protein_join-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/Armadilloa16/soybean_exploration/blob/10f3745c39485b7fd2eadf16a4a6d29e53987fc8/docs/figure/initial_data_organisation.Rmd/protein_join-1.png" target="_blank">10f3745</a>
+</td>
+<td>
+Lyron Winderbaum
+</td>
+<td>
+2021-03-11
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>summary(protein$Protein)</code></pre>
 <pre><code>   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
   32.50   42.33   44.20   44.57   46.48   56.80 </code></pre>
@@ -770,6 +905,43 @@ seed_weight</code></pre>
 # … with 691 more rows</code></pre>
 <pre class="r"><code>hist(seed_weight$wt)</code></pre>
 <p><img src="figure/initial_data_organisation.Rmd/seed_join-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-seed_join-1">
+Past versions of seed_join-1.png
+</button>
+</p>
+<div id="fig-seed_join-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/Armadilloa16/soybean_exploration/blob/10f3745c39485b7fd2eadf16a4a6d29e53987fc8/docs/figure/initial_data_organisation.Rmd/seed_join-1.png" target="_blank">10f3745</a>
+</td>
+<td>
+Lyron Winderbaum
+</td>
+<td>
+2021-03-11
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>summary(seed_weight$wt)</code></pre>
 <pre><code>   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
    1.00   10.10   13.20   12.89   15.90   32.80 </code></pre>
@@ -794,6 +966,43 @@ oil</code></pre>
 # … with 952 more rows</code></pre>
 <pre class="r"><code>hist(oil$Oil)</code></pre>
 <p><img src="figure/initial_data_organisation.Rmd/oil_join-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-oil_join-1">
+Past versions of oil_join-1.png
+</button>
+</p>
+<div id="fig-oil_join-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/Armadilloa16/soybean_exploration/blob/10f3745c39485b7fd2eadf16a4a6d29e53987fc8/docs/figure/initial_data_organisation.Rmd/oil_join-1.png" target="_blank">10f3745</a>
+</td>
+<td>
+Lyron Winderbaum
+</td>
+<td>
+2021-03-11
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>summary(oil$Oil)</code></pre>
 <pre><code>   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
     7.5    15.6    18.1    17.3    19.8    25.4 </code></pre>
@@ -801,25 +1010,26 @@ oil</code></pre>
 <div id="country" class="section level2">
 <h2>Country</h2>
 <pre class="r"><code>country &lt;- read_csv(&#39;./data/Cultivar_vs_country.csv&#39;)
-country</code></pre>
-<pre><code># A tibble: 1,110 x 3
-   `Data-storage-ID` `PI-ID`        `Origin country`
-   &lt;chr&gt;             &lt;chr&gt;          &lt;chr&gt;           
- 1 AB-01             PI458020       Korea           
- 2 AB-02             PI603713       China           
- 3 BR-01             PI628809       Brazil          
- 4 BR-02             BRS 232        Brazil          
- 5 BR-03             PI675651       Brazil          
- 6 BR-04             BRS 360RR      Brazil          
- 7 BR-05             PI675666       Brazil          
- 8 BR-06             PI675660       Brazil          
- 9 BR-07             BRS Valiosa RR Brazil          
-10 BR-08             BRSGO 8660     Brazil          
-# … with 1,100 more rows</code></pre>
-<pre class="r"><code>country$continent &lt;- countrycode(sourcevar = country[[&quot;Origin country&quot;]],
+names(country)[names(country) == &#39;Data-storage-ID&#39;] = &#39;Line&#39;
+country$continent &lt;- countrycode(sourcevar = country[[&quot;Origin country&quot;]],
                                  origin = &quot;country.name&quot;,
                                  destination = &quot;continent&quot;)</code></pre>
 <pre><code>Warning in countrycode(sourcevar = country[[&quot;Origin country&quot;]], origin = &quot;country.name&quot;, : Some values were not matched unambiguously: Costa, ND</code></pre>
+<pre class="r"><code>country</code></pre>
+<pre><code># A tibble: 1,110 x 4
+   Line  `PI-ID`        `Origin country` continent
+   &lt;chr&gt; &lt;chr&gt;          &lt;chr&gt;            &lt;chr&gt;    
+ 1 AB-01 PI458020       Korea            Asia     
+ 2 AB-02 PI603713       China            Asia     
+ 3 BR-01 PI628809       Brazil           Americas 
+ 4 BR-02 BRS 232        Brazil           Americas 
+ 5 BR-03 PI675651       Brazil           Americas 
+ 6 BR-04 BRS 360RR      Brazil           Americas 
+ 7 BR-05 PI675666       Brazil           Americas 
+ 8 BR-06 PI675660       Brazil           Americas 
+ 9 BR-07 BRS Valiosa RR Brazil           Americas 
+10 BR-08 BRSGO 8660     Brazil           Americas 
+# … with 1,100 more rows</code></pre>
 <pre class="r"><code>table(country$`Origin country`)</code></pre>
 <pre><code>
       Algeria     Argentina     Australia       Austria       Belgium 
