@@ -8,14 +8,14 @@ editor_options:
 ---
 
 ```{r setup}
-# Cleanup and Global Settings
-rm(list = ls())
-if (!is.null(sessionInfo()$otherPkgs)) {
-  invisible(lapply(paste0('package:', names(sessionInfo()$otherPkgs)), 
-                   detach, character.only=TRUE, unload=TRUE))
-}
-graphics.off()
-options(stringsAsFactors = FALSE)
+# # Cleanup and Global Settings
+# rm(list = ls())
+# if (!is.null(sessionInfo()$otherPkgs)) {
+#   invisible(lapply(paste0('package:', names(sessionInfo()$otherPkgs)), 
+#                    detach, character.only=TRUE, unload=TRUE))
+# }
+# graphics.off()
+# options(stringsAsFactors = FALSE)
 
 knitr::opts_chunk$set(message = FALSE) 
 library(tidyverse)
