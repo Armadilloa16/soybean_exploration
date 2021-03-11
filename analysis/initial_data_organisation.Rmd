@@ -1,0 +1,161 @@
+---
+title: "Reading in and organising data"
+author: "Lyron Winderbaum"
+date: "2021-03-09"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+```{r setup}
+knitr::opts_chunk$set(message = FALSE) 
+library(tidyverse)
+# library(patchwork)
+# library(sjPlot)
+library(ggsci)
+# library(dabestr)
+# library(dabestr)
+# library(cowplot)
+# library(ggsignif)
+# library(ggforce)
+# library(lme4)
+# library(directlabels)
+# library(lmerTest)
+# library(sjPlot)
+# library(dotwhisker)
+# library(pals)
+# theme_set(theme_cowplot())
+# library(RColorBrewer)
+library(countrycode)
+```
+
+
+# Colours
+
+```{r}
+npg_col = pal_npg("nrc")(9)
+col_list <- c(`Wild`=npg_col[8],
+   Landrace = npg_col[3],
+  `Old cultivar`=npg_col[2],
+  `Modern cultivar`=npg_col[4])
+```
+
+
+# Presence Absence Data
+
+Rows are genes with gene names in first column `Individual', individual 
+cultivars are in columns (confusingly).
+
+```{r}
+pav_table <- read_tsv('./data/soybean_pan_pav.matrix_gene.txt.gz')
+dim(pav_table)
+head(names(pav_table))
+```
+
+
+
+# NBS / NLR Genes
+
+```{r}
+nbs <- read_tsv('./data/Lee.NBS.candidates.lst', col_names = c('Name', 'Class'))
+
+# have to remove the .t1s 
+nbs$Name <- gsub('.t1','', nbs$Name)
+nbs
+table(nbs$Class)
+
+# NBS Presence Absence Data
+# nbs_pav_table <- pav_table %>% filter(Individual %in% nbs$Name)
+```
+
+# Groups
+
+```{r}
+groups <- read_csv('./data/Table_of_cultivar_groups.csv')
+groups <- rename(groups, Group = `Group in violin table`)
+groups <- groups %>% 
+  mutate(Group = str_replace_all(Group, 'landrace', 'Landrace')) %>%
+  mutate(Group = str_replace_all(Group, 'Old_cultivar', 'Old cultivar')) %>%
+  mutate(Group = str_replace_all(Group, 'Modern_cultivar', 'Modern cultivar')) %>%
+  mutate(Group = str_replace_all(Group, 'Wild-type', 'Wild'))
+
+groups$Group <-
+  factor(
+    groups$Group,
+    levels = c('Wild',
+               'Landrace',
+               'Old cultivar',
+               'Modern cultivar')
+  )
+
+groups
+table(groups$Group)
+```
+
+
+# Yield
+
+```{r yield}
+yield <- read_tsv('./data/yield.txt')
+yield
+hist(yield$Yield)
+summary(yield$Yield)
+```
+
+
+
+## Protein
+
+```{r protein_join}
+protein <- read_tsv('./data/protein_phenotype.txt')
+protein
+hist(protein$Protein)
+summary(protein$Protein)
+```
+
+
+## Seed weight
+
+```{r seed_join}
+seed_weight <- read_tsv('./data/Seed_weight_Phenotype.txt', col_names = c('names', 'wt'))
+seed_weight
+hist(seed_weight$wt)
+summary(seed_weight$wt)
+```
+
+
+## Oil content
+
+
+```{r oil_join}
+oil <- read_tsv('./data/oil_phenotype.txt')
+oil
+hist(oil$Oil)
+summary(oil$Oil)
+```
+
+
+
+## Country
+
+```{r}
+country <- read_csv('./data/Cultivar_vs_country.csv')
+country
+country$continent <- countrycode(sourcevar = country[["Origin country"]],
+                                 origin = "country.name",
+                                 destination = "continent")
+table(country$`Origin country`)
+sum(is.na(country$continent))
+table(country$continent)
+```
+
+
+
+# Tables
+
+```{r}
+df = merge(country, groups)
+table(df$`Origin country`, df$Group)
+```
+
+
