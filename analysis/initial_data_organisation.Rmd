@@ -8,6 +8,15 @@ editor_options:
 ---
 
 ```{r setup}
+# Cleanup and Global Settings
+rm(list = ls())
+if (!is.null(sessionInfo()$otherPkgs)) {
+  invisible(lapply(paste0('package:', names(sessionInfo()$otherPkgs)), 
+                   detach, character.only=TRUE, unload=TRUE))
+}
+graphics.off()
+options(stringsAsFactors = FALSE)
+
 knitr::opts_chunk$set(message = FALSE) 
 library(tidyverse)
 # library(patchwork)
@@ -135,6 +144,7 @@ summary(protein$Protein)
 
 ```{r seed_join}
 seed_weight <- read_tsv('./data/Seed_weight_Phenotype.txt', col_names = c('names', 'wt'))
+names(seed_weight)[names(seed_weight) == 'names'] = 'Line'
 seed_weight
 hist(seed_weight$wt)
 summary(seed_weight$wt)
@@ -158,22 +168,30 @@ summary(oil$Oil)
 ```{r}
 country <- read_csv('./data/Cultivar_vs_country.csv')
 names(country)[names(country) == 'Data-storage-ID'] = 'Line'
-country$continent <- countrycode(sourcevar = country[["Origin country"]],
+names(country)[names(country) == 'Origin country'] = 'Country'
+country$Continent <- countrycode(sourcevar = country[["Country"]],
                                  origin = "country.name",
                                  destination = "continent")
+
 country
-table(country$`Origin country`)
-sum(is.na(country$continent))
-table(country$continent)
+table(country$Country)
+sum(is.na(country$Continent))
+table(country$Continent)
 ```
 
 
 
-# Tables
+# Merge and save relevant data
 
 ```{r}
-df = merge(country, groups)
-table(df$`Origin country`, df$Group)
+meta.df = merge(groups[, c('Line', 'Group')], country[, c('Line', 'Country', 'Continent')], all = TRUE)
+meta.df = merge(meta.df, yield, all = TRUE)
+meta.df = merge(meta.df, protein, all = TRUE)
+meta.df = merge(meta.df, seed_weight, all = TRUE)
+meta.df = merge(meta.df, oil, all = TRUE)
+table(meta.df$Country, meta.df$Group)
+save(pav_table, nbs, meta.df, file = file.path('data', 'pav_data.RData'))
 ```
+
 
 

@@ -1,0 +1,58 @@
+---
+title: "Modern USA Lines Initial Exploration"
+author: "Lyron Winderbaum"
+date: "2021-03-11"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+```{r setup}
+# Cleanup and Global Settings
+rm(list = ls())
+if (!is.null(sessionInfo()$otherPkgs)) {
+  invisible(lapply(paste0('package:', names(sessionInfo()$otherPkgs)), 
+                   detach, character.only=TRUE, unload=TRUE))
+}
+graphics.off()
+options(stringsAsFactors = FALSE)
+
+library(tidyverse)
+```
+
+## Read in and subset data
+
+```{r}
+# Read tidy data saved at the of initial_data_organisation.Rmd
+load(file.path('data', 'pav_data.RData'))
+
+# Subset to just lines with a group and country
+meta.df = subset(meta.df, !is.na(Group) & !is.na(Country))
+# Subset to just Modern USA lines
+meta.df = subset(meta.df, Country == 'USA' & Group == "Modern cultivar")
+
+# Reduce presence absence data
+pav_table = subset(pav_table, Line %in% meta.df$Line)
+
+# Proportion presence
+hist(colMeans(pav_table[, -1]))
+```
+
+
+# NBS data
+
+```{r}
+# Reduce to just NBS genes
+nbs_table = pav_table[, c(TRUE, names(pav_table)[-1] %in% nbs$Name)]
+# Proportion presence
+hist(colMeans(nbs_table[, -1]))
+```
+
+
+# Comments
+
+Ahh, this makes sense. It seems the Modern USA Lines are fairly homogenous in 
+terms of genes present/ absent.
+
+
+
