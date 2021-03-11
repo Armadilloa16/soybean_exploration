@@ -52,6 +52,21 @@ dim(pav_table)
 head(names(pav_table))
 ```
 
+Lets reorganise the data to be a little more managable
+```{r}
+gene_nms = pav_table$Individual
+line_nms = names(pav_table)[-1]
+pav_table = t(pav_table[, -1])
+names(pav_table) = gene_nms
+pav_table = as.tibble(pav_table)
+names(pav_table) = gene_nms
+pav_table = cbind(line_nms, pav_table)
+names(pav_table)[1] = 'Line'
+
+pav_table[1:4, 1:4]
+dim(pav_table)
+```
+
 
 
 # NBS / NLR Genes
@@ -87,6 +102,8 @@ groups$Group <-
                'Old cultivar',
                'Modern cultivar')
   )
+
+names(groups)[names(groups) == 'Data-storage-ID'] = 'Line'
 
 groups
 table(groups$Group)
@@ -140,10 +157,11 @@ summary(oil$Oil)
 
 ```{r}
 country <- read_csv('./data/Cultivar_vs_country.csv')
-country
+names(country)[names(country) == 'Data-storage-ID'] = 'Line'
 country$continent <- countrycode(sourcevar = country[["Origin country"]],
                                  origin = "country.name",
                                  destination = "continent")
+country
 table(country$`Origin country`)
 sum(is.na(country$continent))
 table(country$continent)
