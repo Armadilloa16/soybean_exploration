@@ -1,0 +1,126 @@
+---
+title: "NBS initial exploration"
+author: "Lyron Winderbaum"
+date: "2021-03-11"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+```{r setup}
+# # Cleanup and Global Settings
+# rm(list = ls())
+# if (!is.null(sessionInfo()$otherPkgs)) {
+#   invisible(lapply(paste0('package:', names(sessionInfo()$otherPkgs)), 
+#                    detach, character.only=TRUE, unload=TRUE))
+# }
+# graphics.off()
+# options(stringsAsFactors = FALSE)
+
+library(tidyverse)
+```
+
+## Read in and subset data
+
+```{r}
+# Read tidy data saved at the of initial_data_organisation.Rmd
+load(file.path('data', 'pav_data.RData'))
+
+# Reduce to NBS genes
+nbs_table = pav_table[, c(TRUE, names(pav_table)[-1] %in% nbs$Name)]
+
+# Merge on Yield and reduce to lines for which we have yield data
+meta.df = subset(meta.df, !is.na(Yield))
+nbs_table = merge(meta.df[, c('Line', 'Yield')], nbs_table)
+
+# Proportion presence
+hist(colMeans(nbs_table[, -(1:2)]))
+
+# Reduce to genes with some decent level of variation
+nbs_table = nbs_table[, c(TRUE, TRUE, colMeans(nbs_table[, -(1:2)]) <= 0.98 & colMeans(nbs_table[, -(1:2)]) >= 0.02)]
+
+# Proportion presence
+hist(colMeans(nbs_table[, -(1:2)]))
+
+
+# Simplify gene names slightly
+names(nbs_table) = sub('00.1.p$', '', names(nbs_table))
+names(nbs_table) = sub('^GlymaLee.', 'GL', names(nbs_table))
+names(nbs_table) = sub('^UWASoyPan', 'UWA', names(nbs_table))
+
+# Move Line information into row.names
+row.names(nbs_table) = nbs_table$Line
+nbs_table$Line = NULL
+```
+
+
+# Stepwise regression model selection
+
+```{r}
+# Main Effects
+gene_nms = names(nbs_table)[-1]
+m.null = lm(Yield ~ 1, data = nbs_table)
+fm.full = as.formula(paste0('Yield~',paste(gene_nms, collapse="+")))
+m.full = lm(fm.full, data = nbs_table)
+summary(m.full)
+
+m.step.1 = step(m.null, scope = list(upper = m.full))
+summary(m.step.1)
+
+# First (second) order interactions
+gene_nms = names(coef(m.step.1))[-1]
+fm.full = as.formula(paste0('Yield~(',paste(gene_nms, collapse="+"),')^2'))
+m.full = lm(fm.full, data = nbs_table)
+summary(m.full)
+
+m.step.2 = step(m.step.1, scope = list(lower = m.null, upper = m.full))
+summary(m.step.2)
+
+
+
+# Second (third) order interactions
+coef.nms = names(coef(m.step.2))[-1]
+gene_nms = coef.nms[!grepl(':', coef.nms)]
+int_trms_2 = strsplit(coef.nms[grepl(':', coef.nms)], ':')
+
+overlap_with = function(this, interactions){
+  return(sapply(interactions, function(x){return(sum(x %in% this))}))
+}
+what_interacts_with = function(this, interactions){
+  tmp = interactions[overlap_with(this, interactions) > 0]
+  return(lapply(tmp, function(x){return(x[x!=this])}))
+}
+
+int_trms_3 = c()
+for (i in 1:length(int_trms_2)) {
+  g0 = int_trms_2[[i]][1]
+  g1 = int_trms_2[[i]][2]
+  
+  for (g2 in unlist(what_interacts_with(g1, int_trms_2[-i]))){
+    tmp = overlap_with(c(g2, g0), int_trms_2)
+    if (any(tmp == 2)) {
+      if (sum(tmp == 2) > 1) {
+        stop('non-unique interaction terms???')
+      }
+      int_trms_3 = c(int_trms_3, paste(c(g0, g1, g2), collapse = ':'))
+    }
+  }
+}
+
+fm.full = as.formula(paste0('Yield~',paste(c(names(coef(m.step.2))[-1], int_trms_3), collapse="+")))
+m.full = lm(fm.full, data = nbs_table)
+summary(m.full)
+
+m.step.3 = step(m.step.2, scope = list(lower = m.null, upper = m.full))
+summary(m.step.3)
+
+
+```
+
+
+Interesting to find some third order interaction terms here selected. That's
+cool. Maybe a deep dive into the interpretation of one of them would be 
+interesting. Say, "GL06G2306:GL15G1986:UWA00276" maybe as it is the one with 
+smallest p-value.
+
+
