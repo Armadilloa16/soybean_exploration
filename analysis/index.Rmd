@@ -12,3 +12,12 @@ Welcome to the website summarising the soybean R-gene analysis.
 
 0. Reading in and organising data: [link](initial_data_organisation.html)
 
+1. Exploration of just the modern US lines, turns out they are quite genetically 
+similar (at least in terms of NBS genes) and so relatively uninteresting: 
+[link](Modern_USA_initial_exploration.html)
+
+1. Expand exploration of NBS genes to all lines, beggining with exploration of 
+some stepwise regression model selection investigating increasing orders of 
+interactions between genes: 
+[link](NBS_initial_exploration.html)
+
