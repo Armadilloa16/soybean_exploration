@@ -16,7 +16,7 @@ Welcome to the website summarising the soybean R-gene analysis.
 similar (at least in terms of NBS genes) and so relatively uninteresting: 
 [link](Modern_USA_initial_exploration.html)
 
-1. Expand exploration of NBS genes to all lines, beggining with exploration of 
+2. Expand exploration of NBS genes to all lines, beggining with exploration of 
 some stepwise regression model selection investigating increasing orders of 
 interactions between genes: 
 [link](NBS_initial_exploration.html)
