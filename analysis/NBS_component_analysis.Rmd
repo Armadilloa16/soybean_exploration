@@ -1,0 +1,164 @@
+---
+title: "NBS component analysis"
+author: "Lyron Winderbaum"
+date: "2021-03-11"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+\usepackage{bm}
+
+```{r setup}
+# # Cleanup and Global Settings
+# rm(list = ls())
+# if (!is.null(sessionInfo()$otherPkgs)) {
+#   invisible(lapply(paste0('package:', names(sessionInfo()$otherPkgs)), 
+#                    detach, character.only=TRUE, unload=TRUE))
+# }
+# graphics.off()
+# options(stringsAsFactors = FALSE)
+
+library(tidyverse)
+```
+
+
+## Conceptual Framework
+
+\newcommand{\jb}{j^*}
+\newcommand{\kb}{k^*}
+
+First, some notation. Let: 
+
+  * $p_{ij}$ denote an indicator function for the presence absence values 
+  with value $1$ for presence and $0$ for absence of gene $j$ in line $i$, 
+  * $y_i$ denote the yield of line $i$, 
+  * $n$ denote the number of lines and $d$ denote the number of genes,
+  * $n_j = \sum_ip_{ij}$ denote the number of lines with presence of gene $j$,
+  * $n_{\jb} = \sum_i(1 - p_{ij})$ denote the number of lines with absence of 
+  gene $j$,
+  * $\bar{y} = \frac{1}{n}\sum_iy_i$ denote the mean yield, 
+  * $\bar{y}_j = \frac{1}{n_j}\sum_ip_{ij}y_i$ denote the mean yield 
+  of lines with presence of gene $j$, and
+  * $\bar{y}_{\jb} = \frac{1}{n_{\jb}}\sum_i(1 - p_{ij})y_i$ denote the 
+  mean yield of lines with absence of gene $j$.
+
+Note that 
+$\bar{y} = \frac{n_j}{n} \bar{y}_j + \frac{n_{\jb}}{n} \bar{y}_{\jb}$
+and that $n = n_j + n_{\jb}$ for all $j$.
+
+We can created coded yield data which here we will explore in more detail: 
+
+$$ x_{ij} = p_{ij}\bar{y}_j + (1 - p_{ij})\bar{y}_{\jb} $$
+
+Note that
+\begin{align*}
+\frac{1}{n}\sum_ix_{ij} 
+  &= \frac{1}{n}\sum_i(p_{ij}\bar{y}_j + (1 - p_{ij})\bar{y}_{\jb}) \\
+  &= \frac{\bar{y}_j}{n}\sum_ip_{ij} + \frac{\bar{y}_{\jb}}{n}\sum_i(1 - p_{ij}) \\
+  &= \frac{n_j}{n} \bar{y}_j + \frac{n_{\jb}}{n} \bar{y}_{\jb} \\
+  &= \bar{y}
+\end{align*}
+for all $j$.
+
+Let $X_j$ denote the column vector with entries $[x_{ij}]_i$. If we consider the 
+yield data to be pre-centered to have $\bar{y} = 0$ then 
+the $X_j$ will also be centered by construction for all $j$. One important 
+consequence of this centering is that 
+$\frac{n_j}{n} \bar{y}_j + \frac{n_{\jb}}{n} \bar{y}_{\jb} = 0$ and so 
+$\bar{y}_{\jb} = -\frac{n_j}{n_{\jb}} \bar{y}_j$. We will consider the $y_i$ 
+to be centered from here on. The variance of the $X_j$ would then be 
+proportional to
+\begin{align*}
+X_j^TX_j &= \sum_ix_{ij}^2 \\
+         &= \sum_i(p_{ij}\bar{y}_j + (1 - p_{ij})\bar{y}_{\jb})^2 \\
+         &= \sum_i\left(p_{ij}^2\bar{y}_j^2 + 2p_{ij}(1 - p_{ij})\bar{y}_j\bar{y}_{\jb} + (1 - p_{ij})^2\bar{y}_{\jb}^2\right) \\
+         &= \sum_ip_{ij}\bar{y}_j^2 + \sum_i(1 - p_{ij})\bar{y}_{\jb}^2 \\
+         &= n_j\bar{y}_j^2 + n_{\jb}\bar{y}_{\jb}^2 \\
+         &= n_j\bar{y}_j^2 + n_{\jb}(-\frac{n_j}{n_{\jb}} \bar{y}_j)^2 \\
+         &= n_j\bar{y}_j^2 (1 + \frac{n_j}{n_{\jb}}) \\
+         &= \frac{n_j}{n_{\jb}}\bar{y}_j^2 (n_{\jb} + n_j) \\
+         &= \frac{n_j}{n_{\jb}}n\bar{y}_j^2 \\
+\end{align*}
+and 
+\begin{align*}
+X_j^TX_k &= \sum_ix_{ij}x_{ik} \\
+         &= \sum_i(p_{ij}\bar{y}_j + (1 - p_{ij})\bar{y}_{\jb})(p_{ik}\bar{y}_k + (1 - p_{ik})\bar{y}_{\kb}) \\
+         &= \sum_i\left(p_{ij}p_{ik}\bar{y}_j\bar{y}_k + (1 - p_{ij})p_{ik}\bar{y}_{\jb}\bar{y}_k + p_{ij}(1 - p_{ik})\bar{y}_j\bar{y}_{\kb} + (1 - p_{ij})(1 - p_{ik})\bar{y}_{\jb}\bar{y}_{\kb}\right) \\
+\end{align*}
+
+These four terms represent the four outcomes in a two-by-two table, perhaps 
+worth investigating further. Let:
+
+  * $n_{jk} = \sum_ip_{ij}p_{ik}$,
+  * $n_{{\jb}k} = \sum_i(1 - p_{ij})p_{ik}$,
+  * $n_{j{\kb}} = \sum_ip_{ij}(1 - p_{ik})$,
+  * $n_{{\jb}{\kb}} = \sum_i(1 - p_{ij})(1 - p_{ik})$,
+  * $\bar{y}_{jk} = \frac{1}{n_{jk}}\sum_ip_{ij}p_{ik}y_i$,
+  * $\bar{y}_{{\jb}k} = \frac{1}{n_{{\jb}k}}\sum_i(1 - p_{ij})p_{ik}y_i$,
+  * $\bar{y}_{j{\kb}} = \frac{1}{n_{j{\kb}}}\sum_ip_{ij}(1 - p_{ik})y_i$,
+  * $\bar{y}_{{\jb}{\kb}} = \frac{1}{n_{{\jb}{\kb}}}\sum_i(1 - p_{ij})(1 - p_{ik})y_i$.
+
+These relate to the earlier quantities in the following ways
+
+  * $n_j = n_{jk} + n_{j{\kb}}$, $n_{\jb} = n_{{\jb}k} + n_{{\jb}{\kb}}$,
+  $n_{k} = n_{jk} + n_{{\jb}k}$, $n_{\kb} = n_{j{\kb}} + n_{{\jb}{\kb}}$,
+  * $\bar{y}_j = \frac{n_{jk}}{n_j}\bar{y}_{jk} + \frac{n_{j{\kb}}}{n_j}\bar{y}_{j{\kb}}$, 
+  $\bar{y}_{\jb} = \frac{n_{{\jb}k}}{n_{\jb}}\bar{y}_{{\jb}k} + \frac{n_{{\jb}{\kb}}}{n_{\jb}}\bar{y}_{{\jb}{\kb}}$, 
+  $\bar{y}_k = \frac{n_{jk}}{n_k}\bar{y}_{jk} + \frac{n_{{\jb}k}}{n_k}\bar{y}_{{\jb}k}$, 
+  $\bar{y}_{\kb} = \frac{n_{j{\kb}}}{n_{\kb}}\bar{y}_{j{\kb}} + \frac{n_{{\jb}{\kb}}}{n_{\kb}}\bar{y}_{{\jb}{\kb}}$.  
+
+This two-way table notation allows us to write 
+
+\begin{align*}
+X_j^TX_k &= n_{jk}\bar{y}_j\bar{y}_k + n_{{\jb}k}\bar{y}_{\jb}\bar{y}_k + n_{j{\kb}}\bar{y}_j\bar{y}_{\kb} + n_{{\jb}{\kb}}\bar{y}_{\jb}\bar{y}_{\kb} \\
+         &= n_{jk}\bar{y}_j\bar{y}_k + n_{{\jb}k}(-\frac{n_j}{n_{\jb}} \bar{y}_j)\bar{y}_k + n_{j{\kb}}\bar{y}_j(-\frac{n_k}{n_{\kb}} \bar{y}_k) + n_{{\jb}{\kb}}(-\frac{n_j}{n_{\jb}} \bar{y}_j)(-\frac{n_k}{n_{\kb}} \bar{y}_k) \\
+         &= \bar{y}_j\bar{y}_k \left( n_{jk} - n_{{\jb}k}(\frac{n_j}{n_{\jb}}) - n_{j{\kb}}(\frac{n_k}{n_{\kb}}) + n_{{\jb}{\kb}}(\frac{n_j}{n_{\jb}})(\frac{n_k}{n_{\kb}}) \right) \\
+\end{align*}
+
+Notice that if $\frac{n_j}{n_{\jb}} = \frac{n_{jk}}{n_{{\jb}k}}$ then $X_j^TX = 0$.
+This corresponds to the two genes being independant in presence/absence, which 
+results in a covariance of zero.
+
+
+
+
+Let $\eta$ be a $d$-dimensional unit vector i.e. with entries 
+$\eta_j \in \mathbb{R}$ such that $\sum_j \eta_j^2 = 1$, and let $\mathbb{X}$ be 
+the data matrix with entries $x_{ij}$, then consider 
+\begin{align*}
+(\eta \mathbb{X})^T \eta \mathbb{X} 
+  &= \sum_i \left( \sum_j \eta_j x_{ij} \right)^2 \\
+  &= \sum_i \sum_j \sum_k \eta_j \eta_k x_{ij} x_{ik} \\
+  &= \sum_j \eta_j^2 \sum_i x_{ij}^2 + 2\sum_j \sum_{k < i} \eta_j \eta_k \sum_i x_{ij} x_{ik} \\
+  &= \sum_j \eta_j^2 X_j^TX_j + 2\sum_j \sum_{k < i} \eta_j \eta_k X_j^TX_k \\
+\end{align*}
+
+
+## Read in and subset data
+
+```{r}
+# Read tidy data saved at the of initial_data_organisation.Rmd
+load(file.path('data', 'pav_data.RData'))
+
+# Reduce to NBS genes
+nbs_table = pav_table[, c(TRUE, names(pav_table)[-1] %in% nbs$Name)]
+
+# Merge on Yield and reduce to lines for which we have yield data
+meta.df = subset(meta.df, !is.na(Yield))
+nbs_table = merge(meta.df[, c('Line', 'Yield')], nbs_table)
+
+# Reduce to genes with some decent level of variation
+nbs_table = nbs_table[, c(TRUE, TRUE, colMeans(nbs_table[, -(1:2)]) <= 0.98 & colMeans(nbs_table[, -(1:2)]) >= 0.02)]
+
+# Simplify gene names slightly
+names(nbs_table) = sub('00.1.p$', '', names(nbs_table))
+names(nbs_table) = sub('^GlymaLee.', 'GL', names(nbs_table))
+names(nbs_table) = sub('^UWASoyPan', 'UWA', names(nbs_table))
+
+# Move Line information into row.names
+row.names(nbs_table) = nbs_table$Line
+nbs_table$Line = NULL
+```
+
+
