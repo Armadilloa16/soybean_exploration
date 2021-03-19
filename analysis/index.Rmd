@@ -21,3 +21,5 @@ some stepwise regression model selection investigating increasing orders of
 interactions between genes: 
 [link](NBS_initial_exploration.html)
 
+3. Begin exploring some of the ideas around how component analysis could be applied to the problem: 
+[link](NBS_component_analysis.html)
