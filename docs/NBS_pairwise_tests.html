@@ -498,16 +498,16 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomArmadilloa16soybeanexplorationtreeb89d097ddf34ca4ae14eabcd61b9f0acb368a219targetblankb89d097a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/Armadilloa16/soybean_exploration/tree/b89d097ddf34ca4ae14eabcd61b9f0acb368a219" target="_blank">b89d097</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomArmadilloa16soybeanexplorationtree1459c97c1266112b8cb658635f00d0467ce8b496targetblank1459c97a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/Armadilloa16/soybean_exploration/tree/1459c97c1266112b8cb658635f00d0467ce8b496" target="_blank">1459c97</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcomArmadilloa16soybeanexplorationtreeb89d097ddf34ca4ae14eabcd61b9f0acb368a219targetblankb89d097a" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomArmadilloa16soybeanexplorationtree1459c97c1266112b8cb658635f00d0467ce8b496targetblank1459c97a" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility.
 </p>
 <p>
-The results in this page were generated with repository version <a href="https://github.com/Armadilloa16/soybean_exploration/tree/b89d097ddf34ca4ae14eabcd61b9f0acb368a219" target="_blank">b89d097</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
+The results in this page were generated with repository version <a href="https://github.com/Armadilloa16/soybean_exploration/tree/1459c97c1266112b8cb658635f00d0467ce8b496" target="_blank">1459c97</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
 </p>
 <p>
 Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -516,6 +516,9 @@ Note that you need to be careful to ensure that all relevant files for the analy
 Ignored files:
     Ignored:    .Rhistory
     Ignored:    .Rproj.user/
+
+Untracked files:
+    Untracked:  output/pairwise_tests_all_orig.csv
 
 </code></pre>
 <p>
@@ -554,6 +557,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/Armadilloa16/soybean_exploration/blob/1459c97c1266112b8cb658635f00d0467ce8b496/analysis/NBS_pairwise_tests.Rmd" target="_blank">1459c97</a>
+</td>
+<td>
+Lyron Winderbaum
+</td>
+<td>
+2021-05-17
+</td>
+<td>
+Fixed error in data caching and updated results to reflect fix
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/Armadilloa16/soybean_exploration/6c7aa6925cbe430b6784032a449f29c187875db5/docs/NBS_pairwise_tests.html" target="_blank">6c7aa69</a>
+</td>
+<td>
+Lyron Winderbaum
+</td>
+<td>
+2021-05-17
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -782,7 +819,7 @@ row.names(pav_table) = pav_table$Line
 pav_table$Line = NULL</code></pre>
 <p>and we can repeat the pairwise test procedure:</p>
 <pre class="r"><code>gene_nms = names(pav_table)[-1]
-# source(file.path(&#39;analysis&#39;, &#39;pairwsie_tests_all.R&#39;))
+# source(file.path(&#39;analysis&#39;, &#39;pairwise_tests_all.R&#39;))
 df_pairs = read.csv(file.path(&#39;output&#39;, &#39;pairwise_tests_all.csv&#39;))
 df_pairs$gene.1 = gene_nms[df_pairs$gene.1]
 df_pairs$gene.2 = gene_nms[df_pairs$gene.2]
@@ -836,54 +873,63 @@ rbind(sig_lvl,
       p_vals = sapply(sig_lvl, function(x){return(sum(df_pairs$p.val &lt; x))}))</code></pre>
 <pre><code>            [,1]      [,2]     [,3]
 sig_lvl      0.1      0.05     0.01
-p_vals  391570.0 236331.00 76505.00</code></pre>
+p_vals  431342.0 260053.00 85290.00</code></pre>
 <p>and adjust for multiple testing using the Holm-Bonferroni method:</p>
 <pre class="r"><code>sig_lvl = c(0.1, 0.05, 0.01)
 rbind(sig_lvl,
       p_vals = sapply(sig_lvl, function(x){return(sum(df_pairs$p.val*(nrow(df_pairs):1) &lt; x))}))</code></pre>
-<pre><code>        [,1]  [,2]  [,3]
-sig_lvl  0.1  0.05  0.01
-p_vals  84.0 61.00 33.00</code></pre>
-<p>So which are these 37 interesting interactions significant at the 1% level after multiple test correction?</p>
+<pre><code>         [,1]  [,2]  [,3]
+sig_lvl   0.1  0.05  0.01
+p_vals  111.0 79.00 38.00</code></pre>
+<p>So which are these 38 interesting interactions significant at the 1% level after multiple test correction?</p>
 <pre class="r"><code>subset(df_pairs, p.val*(nrow(df_pairs):1) &lt; 0.01)</code></pre>
-<pre><code>           gene.1    gene.2        p.val
-3097588  UWA02279  UWA02696 6.146775e-13
-1542202  UWA00342  UWA00538 6.363480e-13
-2024585  UWA00863  UWA01138 4.987603e-12
-3189725  UWA02696  UWA04952 1.142622e-11
-1732291  UWA00538  UWA02709 1.343754e-11
-1623532  UWA00424  UWA02696 1.408472e-11
-1428447  UWA00241  UWA01567 1.810912e-11
-1038728 GL18G1234  UWA00380 7.721450e-11
-1356040  UWA00182  UWA00538 9.987116e-11
-1042318 GL18G1267  UWA03220 2.077257e-10
-1040101 GL18G1234  UWA03220 2.603432e-10
-2628157  UWA01537  UWA03107 2.879676e-10
-2459484  UWA01367  UWA02285 2.956599e-10
-2357075  UWA01224  UWA01345 3.966186e-10
-2581604  UWA01489  UWA04190 6.680222e-10
-134582  GL03G0315  UWA01036 6.977990e-10
-1493252  UWA00298  UWA01985 7.364664e-10
-1040945 GL18G1267  UWA00380 7.871351e-10
-943086  GL17G1410  UWA01538 9.280403e-10
-942572  GL17G1410  UWA00636 9.899005e-10
-1368915  UWA00189  UWA01420 1.267221e-09
-1480419  UWA00291  UWA00538 1.676407e-09
-1026151 GL18G0922  UWA01693 1.959441e-09
-1378575  UWA00201  UWA00220 2.090802e-09
-1405736  UWA00223  UWA01138 2.826983e-09
-738653  GL15G0651  UWA03178 3.051131e-09
-1523367  UWA00318  UWA02285 3.115504e-09
-1025597 GL18G0922  UWA00780 3.414061e-09
-1427774  UWA00241  UWA00363 3.562766e-09
-2226649  UWA01087  UWA01293 3.717602e-09
-1940091  UWA00773  UWA02820 3.894434e-09
-540811  GL09G1235 GL09G1453 3.896788e-09
-1731950  UWA00538  UWA01863 4.026035e-09</code></pre>
-<p>Do any of these interactions involve NBS genes? Yes! Are any of these interactions between NBS genes? No! GL15G1995, UWA00005, UWA00202, UWA01330, and UWA05312 are NBS genes, so the below is the subset of interactions significant at the 1% level after multiple testing correction that involve NBS genes:</p>
+<pre><code>           gene.1   gene.2        p.val
+1346684  UWA00331 UWA03376 1.102856e-13
+1141561  UWA00124 UWA05001 1.958727e-13
+2451105  UWA01903 UWA02125 6.146775e-13
+1193847  UWA00183 UWA00331 6.363480e-13
+1649641  UWA00731 UWA04571 2.944997e-12
+2552295  UWA02183 UWA04253 2.986282e-12
+1580983  UWA00627 UWA00884 4.987603e-12
+2525414  UWA02125 UWA03239 1.142622e-11
+1346205  UWA00331 UWA02131 1.343754e-11
+1260127  UWA00245 UWA02125 1.408472e-11
+1100273  UWA00078 UWA01330 1.810912e-11
+795203  GL16G1461 UWA00222 7.721450e-11
+1046103  UWA00005 UWA00331 9.987116e-11
+2785774  UWA05056 UWA05133 1.664597e-10
+798428  GL16G1462 UWA02466 2.077257e-10
+796434  GL16G1461 UWA02466 2.603432e-10
+2061196  UWA01259 UWA02319 2.879676e-10
+1923840  UWA01081 UWA01910 2.956599e-10
+1841404  UWA00988 UWA01064 3.966186e-10
+2126279  UWA01381 UWA03673 5.026466e-10
+2023626  UWA01210 UWA03078 6.680222e-10
+103727  GL03G0274 UWA00771 6.977990e-10
+2497372  UWA02062 UWA03639 7.710352e-10
+797197  GL16G1462 UWA00222 7.871351e-10
+723312  GL15G1995 UWA01260 9.280403e-10
+722857  GL15G1995 UWA00411 9.899005e-10
+1055830  UWA00014 UWA01135 1.267221e-09
+1143517  UWA00126 UWA00331 1.676407e-09
+785873  GL16G1403 UWA01438 1.959441e-09
+1064550  UWA00023 UWA00045 2.090802e-09
+1924575  UWA01081 UWA04457 2.398337e-09
+2770651  UWA03673 UWA04229 2.679098e-09
+1088998  UWA00054 UWA00884 2.826983e-09
+562540  GL12G1178 UWA02412 3.051131e-09
+1176847  UWA00163 UWA01910 3.115504e-09
+1346778  UWA00331 UWA03891 3.330527e-09
+785386  GL16G1403 UWA00543 3.414061e-09
+1099677  UWA00078 UWA00202 3.562766e-09</code></pre>
+<p>Do any of these interactions involve NBS genes? Yes! UWA00005, GL15G1995, UWA01330, and UWA00202. Are any of these interactions between NBS genes? No! they are all pairs of one NBS gene to one non-NBS gene:</p>
 <pre class="r"><code>subset(df_pairs, p.val*(nrow(df_pairs):1) &lt; 0.01 &amp; (gene.1 %in% names(nbs_table)[-1] | gene.2 %in% names(nbs_table)[-1]))</code></pre>
-<pre><code>          gene.1   gene.2        p.val
-1378575 UWA00201 UWA00220 2.090802e-09</code></pre>
+<pre><code>           gene.1   gene.2        p.val
+1100273  UWA00078 UWA01330 1.810912e-11
+1046103  UWA00005 UWA00331 9.987116e-11
+723312  GL15G1995 UWA01260 9.280403e-10
+722857  GL15G1995 UWA00411 9.899005e-10
+1099677  UWA00078 UWA00202 3.562766e-09</code></pre>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
