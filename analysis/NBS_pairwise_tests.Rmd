@@ -162,6 +162,10 @@ df_pairs = df_pairs[order(df_pairs$p.val),]
 df_pairs = na.omit(df_pairs)
 ```
 
+Note I did some hackery there to run the code in a seperate script, store output, 
+and load it in a particular format to get around re-running slow clode and get 
+around the GitHub file size limit. 
+
 Of the 3,499,335 pairs of genes, 373,817 cannot compute interaction terms because 
 of the two genes having exact overlap. This leaves 3,125,518 pairs for testing.
 Lets take a look at the p-value distribution:
@@ -195,6 +199,13 @@ multiple test correction?
 subset(df_pairs, p.val*(nrow(df_pairs):1) < 0.01)
 ```
 
+Do any of these interactions involve NBS genes? Yes! Are any of these interactions 
+between NBS genes? No! GL15G1995, UWA00005, UWA00202, UWA01330, and UWA05312 
+are NBS genes, so the below is the subset of interactions significant at the 1% 
+level after multiple testing correction that involve NBS genes:
 
+```{r}
+subset(df_pairs, p.val*(nrow(df_pairs):1) < 0.01 & (gene.1 %in% names(nbs_table)[-1] | gene.2 %in% names(nbs_table)[-1]))
+```
 
 
