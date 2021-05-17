@@ -30,6 +30,8 @@ for (i in 1:(length(gene_nms)-1)) {
   setTxtProgressBar(pb, ind)
 }
 
+write.csv(df_pairs, file = file.path('output', 'pairwise_tests_all_orig.csv'), row.names = FALSE)
+
 # For purposes of file size optimisation
 df_pairs$gene.1 = as.numeric(df_pairs$gene.1)
 df_pairs$gene.2 = as.numeric(df_pairs$gene.2)

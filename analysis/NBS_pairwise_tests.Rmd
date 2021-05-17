@@ -153,7 +153,7 @@ pav_table$Line = NULL
 and we can repeat the pairwise test procedure:
 ```{r}
 gene_nms = names(pav_table)[-1]
-# source(file.path('analysis', 'pairwsie_tests_all.R'))
+# source(file.path('analysis', 'pairwise_tests_all.R'))
 df_pairs = read.csv(file.path('output', 'pairwise_tests_all.csv'))
 df_pairs$gene.1 = gene_nms[df_pairs$gene.1]
 df_pairs$gene.2 = gene_nms[df_pairs$gene.2]
@@ -192,17 +192,16 @@ rbind(sig_lvl,
       p_vals = sapply(sig_lvl, function(x){return(sum(df_pairs$p.val*(nrow(df_pairs):1) < x))}))
 ```
 
-So which are these 37 interesting interactions significant at the 1% level after
+So which are these 38 interesting interactions significant at the 1% level after
 multiple test correction?
 
 ```{r}
 subset(df_pairs, p.val*(nrow(df_pairs):1) < 0.01)
 ```
 
-Do any of these interactions involve NBS genes? Yes! Are any of these interactions 
-between NBS genes? No! GL15G1995, UWA00005, UWA00202, UWA01330, and UWA05312 
-are NBS genes, so the below is the subset of interactions significant at the 1% 
-level after multiple testing correction that involve NBS genes:
+Do any of these interactions involve NBS genes? Yes! UWA00005, GL15G1995, 
+UWA01330, and UWA00202. Are any of these interactions between NBS genes? No! 
+they are all pairs of one NBS gene to one non-NBS gene:
 
 ```{r}
 subset(df_pairs, p.val*(nrow(df_pairs):1) < 0.01 & (gene.1 %in% names(nbs_table)[-1] | gene.2 %in% names(nbs_table)[-1]))
