@@ -1,0 +1,200 @@
+---
+title: "NBS pairwise tests"
+author: "Lyron Winderbaum"
+date: "2021-03-11"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+```{r setup}
+# # Cleanup and Global Settings
+# rm(list = ls())
+# if (!is.null(sessionInfo()$otherPkgs)) {
+#   invisible(lapply(paste0('package:', names(sessionInfo()$otherPkgs)),
+#                    detach, character.only=TRUE, unload=TRUE))
+# }
+# graphics.off()
+# options(stringsAsFactors = FALSE)
+
+library(tidyverse)
+```
+
+## Read in and subset data
+
+```{r}
+# Read tidy data saved at the of initial_data_organisation.Rmd
+load(file.path('data', 'pav_data.RData'))
+
+# Reduce to NBS genes
+nbs_table = pav_table[, c(TRUE, names(pav_table)[-1] %in% nbs$Name)]
+
+# Merge on Yield and reduce to lines for which we have yield data
+meta.df = subset(meta.df, !is.na(Yield))
+nbs_table = merge(meta.df[, c('Line', 'Yield')], nbs_table)
+
+# Reduce to genes with some decent level of variation
+nbs_table = nbs_table[, c(TRUE, TRUE, colMeans(nbs_table[, -(1:2)]) <= 0.98 & colMeans(nbs_table[, -(1:2)]) >= 0.02)]
+
+# # Proportion presence
+# hist(colMeans(nbs_table[, -(1:2)]))
+
+
+# Simplify gene names slightly
+names(nbs_table) = sub('00.1.p$', '', names(nbs_table))
+names(nbs_table) = sub('^GlymaLee.', 'GL', names(nbs_table))
+names(nbs_table) = sub('^UWASoyPan', 'UWA', names(nbs_table))
+
+# Move Line information into row.names
+row.names(nbs_table) = nbs_table$Line
+nbs_table$Line = NULL
+```
+
+
+# NBS Pairwise Tests
+
+So, if we restrict to NBS genes that occur in at least 2% and no more than 98% 
+of individuals in our dataset this leaves us with 76 genes (noting we shorten 
+GlymaLee to GL and UWASoyPan to UWA for convenience):
+```{r}
+gene_nms = names(nbs_table)[-1]
+gene_nms
+```
+
+We we consider all possible pairwise interactions (of which there are 2850), and 
+perform a t-test for the interaction term in these linear models with Yield as 
+the response:
+```{r}
+gene_nms = names(nbs_table)[-1]
+df_pairs = data.frame()
+for (i in 1:(length(gene_nms)-1)) {
+  for (j in (i + 1):length(gene_nms)) {
+    f = as.formula(paste('Yield ~', gene_nms[i], '*', gene_nms[j]))
+    m = lm(f, data = nbs_table)
+    int_nm = paste0(gene_nms[i], ':', gene_nms[j])
+    if (int_nm %in% row.names(summary(m)$coefficients)) {
+      df_pairs = rbind(
+        df_pairs, 
+        data.frame(gene.1 = gene_nms[i], gene.2 = gene_nms[j], 
+                   p.val = summary(m)$coefficients[int_nm, "Pr(>|t|)"])
+      )
+    } else {
+       df_pairs = rbind(
+        df_pairs, 
+        data.frame(gene.1 = gene_nms[i], gene.2 = gene_nms[j], p.val = NA)
+      ) 
+    }
+  }
+}
+
+df_pairs = df_pairs[order(df_pairs$p.val),]
+df_pairs = na.omit(df_pairs)
+```
+
+234 of these interactions cannot be computed (because there is no difference in 
+gene presence/absence between the genes), leaving us with 2764 interactions.
+Lets have a quick look at the p-value distribution:
+
+```{r}
+hist(df_pairs$p.val)
+```
+
+```{r}
+sig_lvl = c(0.1, 0.05, 0.01)
+rbind(sig_lvl,
+      p_vals = sapply(sig_lvl, function(x){return(sum(df_pairs$p.val < x))}))
+```
+
+But we should apply a correction for multiple testing, using the Holm-Bonferroni 
+method we get: 
+
+```{r}
+sig_lvl = c(0.1, 0.05, 0.01)
+rbind(sig_lvl,
+      p_vals = sapply(sig_lvl, function(x){return(sum(df_pairs$p.val*(nrow(df_pairs):1) < x))}))
+```
+
+So which are these three interesting interactions?
+
+```{r}
+subset(df_pairs, p.val*(nrow(df_pairs):1) < 0.05)
+```
+
+
+
+# Global Pairwise Tests
+
+We can try the same procedure for all genes, not just the NBS genes. But first 
+lets just tidy the full data in the same way we tidied the NBS data.
+
+```{r}
+pav_table = merge(meta.df[, c('Line', 'Yield')], pav_table)
+
+# Reduce to genes with some decent level of variation
+pav_table = pav_table[, c(TRUE, TRUE, colMeans(pav_table[, -(1:2)]) <= 0.98 & colMeans(pav_table[, -(1:2)]) >= 0.02)]
+```
+
+The filter to only include genes with proportion of occurance between 2% and 98%
+reduces the 51415 genes down to just 2648 genes --- a huge number of these genes
+are either very rare or very common, making it difficult to assess their 
+imporance on Yield to to sample size limitations. Finish tidying:
+
+```{r}
+# Simplify gene names slightly
+names(pav_table) = sub('00.1.p$', '', names(pav_table))
+names(pav_table) = sub('^GlymaLee.', 'GL', names(pav_table))
+names(pav_table) = sub('^UWASoyPan', 'UWA', names(pav_table))
+
+# Move Line information into row.names
+row.names(pav_table) = pav_table$Line
+pav_table$Line = NULL
+```
+
+and we can repeat the pairwise test procedure:
+```{r}
+gene_nms = names(pav_table)[-1]
+# source(file.path('analysis', 'pairwsie_tests_all.R'))
+df_pairs = read.csv(file.path('output', 'pairwise_tests_all.csv'))
+df_pairs$gene.1 = gene_nms[df_pairs$gene.1]
+df_pairs$gene.2 = gene_nms[df_pairs$gene.2]
+
+df_pairs = df_pairs[order(df_pairs$p.val),]
+df_pairs = na.omit(df_pairs)
+```
+
+Of the 3,499,335 pairs of genes, 373,817 cannot compute interaction terms because 
+of the two genes having exact overlap. This leaves 3,125,518 pairs for testing.
+Lets take a look at the p-value distribution:
+
+```{r}
+hist(df_pairs$p.val)
+```
+
+Nice, lookes like a clear addition between a uniform distribution and an 
+exponential distribution, just what we would expect if there are some real 
+interactions mixed in. Lets count the small p-values:
+
+```{r}
+sig_lvl = c(0.1, 0.05, 0.01)
+rbind(sig_lvl,
+      p_vals = sapply(sig_lvl, function(x){return(sum(df_pairs$p.val < x))}))
+```
+
+and adjust for multiple testing using the Holm-Bonferroni method: 
+
+```{r}
+sig_lvl = c(0.1, 0.05, 0.01)
+rbind(sig_lvl,
+      p_vals = sapply(sig_lvl, function(x){return(sum(df_pairs$p.val*(nrow(df_pairs):1) < x))}))
+```
+
+So which are these 37 interesting interactions significant at the 1% level after
+multiple test correction?
+
+```{r}
+subset(df_pairs, p.val*(nrow(df_pairs):1) < 0.01)
+```
+
+
+
+

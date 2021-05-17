@@ -1,0 +1,1018 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="Lyron Winderbaum" />
+
+<meta name="date" content="2021-03-11" />
+
+<title>NBS pairwise tests</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
+
+<link rel="icon" href="https://github.com/workflowr/workflowr-assets/raw/master/img/reproducible.png">
+<!-- Add a small amount of space between sections. -->
+<style type="text/css">
+div.section {
+  padding-top: 12px;
+}
+</style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 51px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h2 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h3 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h4 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h5 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h6 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #ffffff;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">soybean_exploration</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="about.html">About</a>
+</li>
+<li>
+  <a href="license.html">License</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="https://github.com/Armadilloa16/soybean_exploration">
+    <span class="fa fa-github"></span>
+     
+    Source code
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">NBS pairwise tests</h1>
+<h4 class="author">Lyron Winderbaum</h4>
+<h4 class="date">2021-03-11</h4>
+
+</div>
+
+
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-report" data-toggle="collapse" data-target="#workflowr-report">
+<span class="glyphicon glyphicon-list" aria-hidden="true"></span> workflowr <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
+</button>
+</p>
+<div id="workflowr-report" class="collapse">
+<ul class="nav nav-tabs">
+<li class="active">
+<a data-toggle="tab" href="#summary">Summary</a>
+</li>
+<li>
+<a data-toggle="tab" href="#checks"> Checks <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> </a>
+</li>
+<li>
+<a data-toggle="tab" href="#versions">Past versions</a>
+</li>
+</ul>
+<div class="tab-content">
+<div id="summary" class="tab-pane fade in active">
+<p>
+<strong>Last updated:</strong> 2021-05-17
+</p>
+<p>
+<strong>Checks:</strong> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 7 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> 0
+</p>
+<p>
+<strong>Knit directory:</strong> <code>soybean_exploration/</code> <span class="glyphicon glyphicon-question-sign" aria-hidden="true" title="This is the local directory in which the code in this file was executed."> </span>
+</p>
+<p>
+This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis was created with <a
+  href="https://github.com/jdblischak/workflowr">workflowr</a> (version 1.6.2). The <em>Checks</em> tab describes the reproducibility checks that were applied when the results were created. The <em>Past versions</em> tab lists the development history.
+</p>
+<hr>
+</div>
+<div id="checks" class="tab-pane fade">
+<div id="workflowr-checks" class="panel-group">
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguptodate"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>R Markdown file:</strong> up-to-date </a>
+</p>
+</div>
+<div id="strongRMarkdownfilestronguptodate" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great! Since the R Markdown file has been committed to the Git repository, you know the exact version of the code that produced these results.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongEnvironmentstrongempty"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Environment:</strong> empty </a>
+</p>
+</div>
+<div id="strongEnvironmentstrongempty" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! The global environment was empty. Objects defined in the global environment can affect the analysis in your R Markdown file in unknown ways. For reproduciblity it’s best to always run the code in an empty environment.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSeedstrongcodesetseed20210309code"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Seed:</strong> <code>set.seed(20210309)</code> </a>
+</p>
+</div>
+<div id="strongSeedstrongcodesetseed20210309code" class="panel-collapse collapse">
+<div class="panel-body">
+<p>The command <code>set.seed(20210309)</code> was run prior to running the code in the R Markdown file. Setting a seed ensures that any results that rely on randomness, e.g. subsampling or permutations, are reproducible.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSessioninformationstrongrecorded"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Session information:</strong> recorded </a>
+</p>
+</div>
+<div id="strongSessioninformationstrongrecorded" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Recording the operating system, R version, and package versions is critical for reproducibility.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongCachestrongnone"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Cache:</strong> none </a>
+</p>
+</div>
+<div id="strongCachestrongnone" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Nice! There were no cached chunks for this analysis, so you can be confident that you successfully produced the results during this run.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongFilepathsstrongrelative"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>File paths:</strong> relative </a>
+</p>
+</div>
+<div id="strongFilepathsstrongrelative" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Using relative paths to the files within your workflowr project makes it easier to run your code on other machines.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomArmadilloa16soybeanexplorationtree4fa4c7c88104909b32219e0953679e197e5faf72targetblank4fa4c7ca"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/Armadilloa16/soybean_exploration/tree/4fa4c7c88104909b32219e0953679e197e5faf72" target="_blank">4fa4c7c</a> </a>
+</p>
+</div>
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomArmadilloa16soybeanexplorationtree4fa4c7c88104909b32219e0953679e197e5faf72targetblank4fa4c7ca" class="panel-collapse collapse">
+<div class="panel-body">
+<p>
+Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility.
+</p>
+<p>
+The results in this page were generated with repository version <a href="https://github.com/Armadilloa16/soybean_exploration/tree/4fa4c7c88104909b32219e0953679e197e5faf72" target="_blank">4fa4c7c</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
+</p>
+<p>
+Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
+</p>
+<pre><code>
+Ignored files:
+    Ignored:    .Rhistory
+    Ignored:    .Rproj.user/
+
+</code></pre>
+<p>
+Note that any generated files, e.g. HTML, png, CSS, etc., are not included in this status report because it is ok for generated content to have uncommitted changes.
+</p>
+</div>
+</div>
+</div>
+</div>
+<hr>
+</div>
+<div id="versions" class="tab-pane fade">
+
+<p>
+These are the previous versions of the repository in which changes were made to the R Markdown (<code>analysis/NBS_pairwise_tests.Rmd</code>) and HTML (<code>docs/NBS_pairwise_tests.html</code>) files. If you’ve configured a remote Git repository (see <code>?wflow_git_remote</code>), click on the hyperlinks in the table below to view the files as they were in that past version.
+</p>
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+File
+</th>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+<th>
+Message
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/Armadilloa16/soybean_exploration/blob/4fa4c7c88104909b32219e0953679e197e5faf72/analysis/NBS_pairwise_tests.Rmd" target="_blank">4fa4c7c</a>
+</td>
+<td>
+Lyron Winderbaum
+</td>
+<td>
+2021-05-17
+</td>
+<td>
+Fix for GitHub file size limitation
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/Armadilloa16/soybean_exploration/0a6fbe7ce3dd9961bcfcefeb1c58bfca4906de47/docs/NBS_pairwise_tests.html" target="_blank">0a6fbe7</a>
+</td>
+<td>
+Lyron Winderbaum
+</td>
+<td>
+2021-05-17
+</td>
+<td>
+Build site.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/Armadilloa16/soybean_exploration/blob/a6180e741eedca4d1f9959b6010915f98ed5aed1/analysis/NBS_pairwise_tests.Rmd" target="_blank">a6180e7</a>
+</td>
+<td>
+Lyron Winderbaum
+</td>
+<td>
+2021-05-17
+</td>
+<td>
+Pairwise Tests
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<hr>
+</div>
+</div>
+</div>
+<pre class="r"><code># # Cleanup and Global Settings
+# rm(list = ls())
+# if (!is.null(sessionInfo()$otherPkgs)) {
+#   invisible(lapply(paste0(&#39;package:&#39;, names(sessionInfo()$otherPkgs)),
+#                    detach, character.only=TRUE, unload=TRUE))
+# }
+# graphics.off()
+# options(stringsAsFactors = FALSE)
+
+library(tidyverse)</code></pre>
+<pre><code>── Attaching packages ──────────────────────────────────────────────────────────────────────── tidyverse 1.2.1 ──</code></pre>
+<pre><code>✔ ggplot2 3.2.1     ✔ purrr   0.3.2
+✔ tibble  2.1.3     ✔ dplyr   0.8.3
+✔ tidyr   1.0.0     ✔ stringr 1.4.0
+✔ readr   1.3.1     ✔ forcats 0.4.0</code></pre>
+<pre><code>── Conflicts ─────────────────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
+✖ dplyr::filter() masks stats::filter()
+✖ dplyr::lag()    masks stats::lag()</code></pre>
+<div id="read-in-and-subset-data" class="section level2">
+<h2>Read in and subset data</h2>
+<pre class="r"><code># Read tidy data saved at the of initial_data_organisation.Rmd
+load(file.path(&#39;data&#39;, &#39;pav_data.RData&#39;))
+
+# Reduce to NBS genes
+nbs_table = pav_table[, c(TRUE, names(pav_table)[-1] %in% nbs$Name)]
+
+# Merge on Yield and reduce to lines for which we have yield data
+meta.df = subset(meta.df, !is.na(Yield))
+nbs_table = merge(meta.df[, c(&#39;Line&#39;, &#39;Yield&#39;)], nbs_table)
+
+# Reduce to genes with some decent level of variation
+nbs_table = nbs_table[, c(TRUE, TRUE, colMeans(nbs_table[, -(1:2)]) &lt;= 0.98 &amp; colMeans(nbs_table[, -(1:2)]) &gt;= 0.02)]
+
+# # Proportion presence
+# hist(colMeans(nbs_table[, -(1:2)]))
+
+
+# Simplify gene names slightly
+names(nbs_table) = sub(&#39;00.1.p$&#39;, &#39;&#39;, names(nbs_table))
+names(nbs_table) = sub(&#39;^GlymaLee.&#39;, &#39;GL&#39;, names(nbs_table))
+names(nbs_table) = sub(&#39;^UWASoyPan&#39;, &#39;UWA&#39;, names(nbs_table))
+
+# Move Line information into row.names
+row.names(nbs_table) = nbs_table$Line
+nbs_table$Line = NULL</code></pre>
+</div>
+<div id="nbs-pairwise-tests" class="section level1">
+<h1>NBS Pairwise Tests</h1>
+<p>So, if we restrict to NBS genes that occur in at least 2% and no more than 98% of individuals in our dataset this leaves us with 76 genes (noting we shorten GlymaLee to GL and UWASoyPan to UWA for convenience):</p>
+<pre class="r"><code>gene_nms = names(nbs_table)[-1]
+gene_nms</code></pre>
+<pre><code> [1] &quot;GL01G0309&quot; &quot;GL01G0884&quot; &quot;GL03G0420&quot; &quot;GL03G0421&quot; &quot;GL03G0454&quot;
+ [6] &quot;GL03G0455&quot; &quot;GL03G0456&quot; &quot;GL03G0457&quot; &quot;GL03G0459&quot; &quot;GL03G0706&quot;
+[11] &quot;GL03G0707&quot; &quot;GL06G2286&quot; &quot;GL06G2289&quot; &quot;GL06G2291&quot; &quot;GL06G2293&quot;
+[16] &quot;GL06G2305&quot; &quot;GL06G2306&quot; &quot;GL06G2326&quot; &quot;GL06G2328&quot; &quot;GL07G0600&quot;
+[21] &quot;GL07G0702&quot; &quot;GL10G0346&quot; &quot;GL14G0220&quot; &quot;GL15G1986&quot; &quot;GL15G1992&quot;
+[26] &quot;GL15G1993&quot; &quot;GL15G1995&quot; &quot;GL16G1111&quot; &quot;GL16G1113&quot; &quot;GL16G1115&quot;
+[31] &quot;GL16G1308&quot; &quot;GL16G1752&quot; &quot;GL16G1755&quot; &quot;GL16G1756&quot; &quot;GL18G0757&quot;
+[36] &quot;GL18G0763&quot; &quot;GL18G0766&quot; &quot;UWA00005&quot;  &quot;UWA00022&quot;  &quot;UWA00043&quot; 
+[41] &quot;UWA00155&quot;  &quot;UWA00201&quot;  &quot;UWA00202&quot;  &quot;UWA00251&quot;  &quot;UWA00276&quot; 
+[46] &quot;UWA00316&quot;  &quot;UWA00326&quot;  &quot;UWA00427&quot;  &quot;UWA00670&quot;  &quot;UWA00725&quot; 
+[51] &quot;UWA00772&quot;  &quot;UWA00953&quot;  &quot;UWA00975&quot;  &quot;UWA01217&quot;  &quot;UWA01253&quot; 
+[56] &quot;UWA01320&quot;  &quot;UWA01330&quot;  &quot;UWA01418&quot;  &quot;UWA01530&quot;  &quot;UWA01729&quot; 
+[61] &quot;UWA01876&quot;  &quot;UWA01973&quot;  &quot;UWA02043&quot;  &quot;UWA02496&quot;  &quot;UWA02799&quot; 
+[66] &quot;UWA03194&quot;  &quot;UWA03230&quot;  &quot;UWA03233&quot;  &quot;UWA03261&quot;  &quot;UWA03336&quot; 
+[71] &quot;UWA03340&quot;  &quot;UWA03402&quot;  &quot;UWA04314&quot;  &quot;UWA04354&quot;  &quot;UWA04967&quot; 
+[76] &quot;UWA05312&quot; </code></pre>
+<p>We we consider all possible pairwise interactions (of which there are 2850), and perform a t-test for the interaction term in these linear models with Yield as the response:</p>
+<pre class="r"><code>gene_nms = names(nbs_table)[-1]
+df_pairs = data.frame()
+for (i in 1:(length(gene_nms)-1)) {
+  for (j in (i + 1):length(gene_nms)) {
+    f = as.formula(paste(&#39;Yield ~&#39;, gene_nms[i], &#39;*&#39;, gene_nms[j]))
+    m = lm(f, data = nbs_table)
+    int_nm = paste0(gene_nms[i], &#39;:&#39;, gene_nms[j])
+    if (int_nm %in% row.names(summary(m)$coefficients)) {
+      df_pairs = rbind(
+        df_pairs, 
+        data.frame(gene.1 = gene_nms[i], gene.2 = gene_nms[j], 
+                   p.val = summary(m)$coefficients[int_nm, &quot;Pr(&gt;|t|)&quot;])
+      )
+    } else {
+       df_pairs = rbind(
+        df_pairs, 
+        data.frame(gene.1 = gene_nms[i], gene.2 = gene_nms[j], p.val = NA)
+      ) 
+    }
+  }
+}
+
+df_pairs = df_pairs[order(df_pairs$p.val),]
+df_pairs = na.omit(df_pairs)</code></pre>
+<p>234 of these interactions cannot be computed (because there is no difference in gene presence/absence between the genes), leaving us with 2764 interactions. Lets have a quick look at the p-value distribution:</p>
+<pre class="r"><code>hist(df_pairs$p.val)</code></pre>
+<p><img src="figure/NBS_pairwise_tests.Rmd/unnamed-chunk-4-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-4-1">
+Past versions of unnamed-chunk-4-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-4-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/Armadilloa16/soybean_exploration/blob/0a6fbe7ce3dd9961bcfcefeb1c58bfca4906de47/docs/figure/NBS_pairwise_tests.Rmd/unnamed-chunk-4-1.png" target="_blank">0a6fbe7</a>
+</td>
+<td>
+Lyron Winderbaum
+</td>
+<td>
+2021-05-17
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<pre class="r"><code>sig_lvl = c(0.1, 0.05, 0.01)
+rbind(sig_lvl,
+      p_vals = sapply(sig_lvl, function(x){return(sum(df_pairs$p.val &lt; x))}))</code></pre>
+<pre><code>         [,1]   [,2]  [,3]
+sig_lvl   0.1   0.05  0.01
+p_vals  410.0 234.00 83.00</code></pre>
+<p>But we should apply a correction for multiple testing, using the Holm-Bonferroni method we get:</p>
+<pre class="r"><code>sig_lvl = c(0.1, 0.05, 0.01)
+rbind(sig_lvl,
+      p_vals = sapply(sig_lvl, function(x){return(sum(df_pairs$p.val*(nrow(df_pairs):1) &lt; x))}))</code></pre>
+<pre><code>        [,1] [,2] [,3]
+sig_lvl  0.1 0.05 0.01
+p_vals   3.0 3.00 1.00</code></pre>
+<p>So which are these three interesting interactions?</p>
+<pre class="r"><code>subset(df_pairs, p.val*(nrow(df_pairs):1) &lt; 0.05)</code></pre>
+<pre><code>        gene.1   gene.2        p.val
+2524  UWA00725 UWA04967 3.520042e-06
+1006 GL06G2293 UWA01973 4.094386e-06
+2240  UWA00155 UWA01876 1.020067e-05</code></pre>
+</div>
+<div id="global-pairwise-tests" class="section level1">
+<h1>Global Pairwise Tests</h1>
+<p>We can try the same procedure for all genes, not just the NBS genes. But first lets just tidy the full data in the same way we tidied the NBS data.</p>
+<pre class="r"><code>pav_table = merge(meta.df[, c(&#39;Line&#39;, &#39;Yield&#39;)], pav_table)
+
+# Reduce to genes with some decent level of variation
+pav_table = pav_table[, c(TRUE, TRUE, colMeans(pav_table[, -(1:2)]) &lt;= 0.98 &amp; colMeans(pav_table[, -(1:2)]) &gt;= 0.02)]</code></pre>
+<p>The filter to only include genes with proportion of occurance between 2% and 98% reduces the 51415 genes down to just 2648 genes — a huge number of these genes are either very rare or very common, making it difficult to assess their imporance on Yield to to sample size limitations. Finish tidying:</p>
+<pre class="r"><code># Simplify gene names slightly
+names(pav_table) = sub(&#39;00.1.p$&#39;, &#39;&#39;, names(pav_table))
+names(pav_table) = sub(&#39;^GlymaLee.&#39;, &#39;GL&#39;, names(pav_table))
+names(pav_table) = sub(&#39;^UWASoyPan&#39;, &#39;UWA&#39;, names(pav_table))
+
+# Move Line information into row.names
+row.names(pav_table) = pav_table$Line
+pav_table$Line = NULL</code></pre>
+<p>and we can repeat the pairwise test procedure:</p>
+<pre class="r"><code>gene_nms = names(pav_table)[-1]
+# source(file.path(&#39;analysis&#39;, &#39;pairwsie_tests_all.R&#39;))
+df_pairs = read.csv(file.path(&#39;output&#39;, &#39;pairwise_tests_all.csv&#39;))
+df_pairs$gene.1 = gene_nms[df_pairs$gene.1]
+df_pairs$gene.2 = gene_nms[df_pairs$gene.2]
+
+df_pairs = df_pairs[order(df_pairs$p.val),]
+df_pairs = na.omit(df_pairs)</code></pre>
+<p>Of the 3,499,335 pairs of genes, 373,817 cannot compute interaction terms because of the two genes having exact overlap. This leaves 3,125,518 pairs for testing. Lets take a look at the p-value distribution:</p>
+<pre class="r"><code>hist(df_pairs$p.val)</code></pre>
+<p><img src="figure/NBS_pairwise_tests.Rmd/unnamed-chunk-11-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-11-1">
+Past versions of unnamed-chunk-11-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-11-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/Armadilloa16/soybean_exploration/blob/0a6fbe7ce3dd9961bcfcefeb1c58bfca4906de47/docs/figure/NBS_pairwise_tests.Rmd/unnamed-chunk-11-1.png" target="_blank">0a6fbe7</a>
+</td>
+<td>
+Lyron Winderbaum
+</td>
+<td>
+2021-05-17
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>Nice, lookes like a clear addition between a uniform distribution and an exponential distribution, just what we would expect if there are some real interactions mixed in. Lets count the small p-values:</p>
+<pre class="r"><code>sig_lvl = c(0.1, 0.05, 0.01)
+rbind(sig_lvl,
+      p_vals = sapply(sig_lvl, function(x){return(sum(df_pairs$p.val &lt; x))}))</code></pre>
+<pre><code>            [,1]      [,2]     [,3]
+sig_lvl      0.1      0.05     0.01
+p_vals  391570.0 236331.00 76505.00</code></pre>
+<p>and adjust for multiple testing using the Holm-Bonferroni method:</p>
+<pre class="r"><code>sig_lvl = c(0.1, 0.05, 0.01)
+rbind(sig_lvl,
+      p_vals = sapply(sig_lvl, function(x){return(sum(df_pairs$p.val*(nrow(df_pairs):1) &lt; x))}))</code></pre>
+<pre><code>        [,1]  [,2]  [,3]
+sig_lvl  0.1  0.05  0.01
+p_vals  84.0 61.00 33.00</code></pre>
+<p>So which are these 37 interesting interactions significant at the 1% level after multiple test correction?</p>
+<pre class="r"><code>subset(df_pairs, p.val*(nrow(df_pairs):1) &lt; 0.01)</code></pre>
+<pre><code>           gene.1    gene.2        p.val
+3097588  UWA02279  UWA02696 6.146775e-13
+1542202  UWA00342  UWA00538 6.363480e-13
+2024585  UWA00863  UWA01138 4.987603e-12
+3189725  UWA02696  UWA04952 1.142622e-11
+1732291  UWA00538  UWA02709 1.343754e-11
+1623532  UWA00424  UWA02696 1.408472e-11
+1428447  UWA00241  UWA01567 1.810912e-11
+1038728 GL18G1234  UWA00380 7.721450e-11
+1356040  UWA00182  UWA00538 9.987116e-11
+1042318 GL18G1267  UWA03220 2.077257e-10
+1040101 GL18G1234  UWA03220 2.603432e-10
+2628157  UWA01537  UWA03107 2.879676e-10
+2459484  UWA01367  UWA02285 2.956599e-10
+2357075  UWA01224  UWA01345 3.966186e-10
+2581604  UWA01489  UWA04190 6.680222e-10
+134582  GL03G0315  UWA01036 6.977990e-10
+1493252  UWA00298  UWA01985 7.364664e-10
+1040945 GL18G1267  UWA00380 7.871351e-10
+943086  GL17G1410  UWA01538 9.280403e-10
+942572  GL17G1410  UWA00636 9.899005e-10
+1368915  UWA00189  UWA01420 1.267221e-09
+1480419  UWA00291  UWA00538 1.676407e-09
+1026151 GL18G0922  UWA01693 1.959441e-09
+1378575  UWA00201  UWA00220 2.090802e-09
+1405736  UWA00223  UWA01138 2.826983e-09
+738653  GL15G0651  UWA03178 3.051131e-09
+1523367  UWA00318  UWA02285 3.115504e-09
+1025597 GL18G0922  UWA00780 3.414061e-09
+1427774  UWA00241  UWA00363 3.562766e-09
+2226649  UWA01087  UWA01293 3.717602e-09
+1940091  UWA00773  UWA02820 3.894434e-09
+540811  GL09G1235 GL09G1453 3.896788e-09
+1731950  UWA00538  UWA01863 4.026035e-09</code></pre>
+<br>
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
+<span class="glyphicon glyphicon-wrench" aria-hidden="true"></span> Session information
+</button>
+</p>
+<div id="workflowr-sessioninfo" class="collapse">
+<pre class="r"><code>sessionInfo()</code></pre>
+<pre><code>R version 3.6.3 (2020-02-29)
+Platform: x86_64-pc-linux-gnu (64-bit)
+Running under: Ubuntu 18.04.5 LTS
+
+Matrix products: default
+BLAS:   /usr/lib/x86_64-linux-gnu/openblas/libblas.so.3
+LAPACK: /usr/lib/x86_64-linux-gnu/libopenblasp-r0.2.20.so
+
+locale:
+ [1] LC_CTYPE=en_AU.UTF-8       LC_NUMERIC=C              
+ [3] LC_TIME=en_AU.UTF-8        LC_COLLATE=en_AU.UTF-8    
+ [5] LC_MONETARY=en_AU.UTF-8    LC_MESSAGES=en_AU.UTF-8   
+ [7] LC_PAPER=en_AU.UTF-8       LC_NAME=C                 
+ [9] LC_ADDRESS=C               LC_TELEPHONE=C            
+[11] LC_MEASUREMENT=en_AU.UTF-8 LC_IDENTIFICATION=C       
+
+attached base packages:
+[1] stats     graphics  grDevices utils     datasets  methods   base     
+
+other attached packages:
+[1] forcats_0.4.0   stringr_1.4.0   dplyr_0.8.3     purrr_0.3.2    
+[5] readr_1.3.1     tidyr_1.0.0     tibble_2.1.3    ggplot2_3.2.1  
+[9] tidyverse_1.2.1
+
+loaded via a namespace (and not attached):
+ [1] tidyselect_1.1.0 xfun_0.10        haven_2.3.1      lattice_0.20-41 
+ [5] colorspace_1.4-1 vctrs_0.3.1      generics_0.0.2   htmltools_0.4.0 
+ [9] yaml_2.2.0       rlang_0.4.6      later_1.0.0      pillar_1.4.2    
+[13] withr_2.1.2      glue_1.3.1       modelr_0.1.5     readxl_1.3.1    
+[17] lifecycle_0.1.0  munsell_0.5.0    gtable_0.3.0     workflowr_1.6.2 
+[21] cellranger_1.1.0 rvest_0.3.4      evaluate_0.14    knitr_1.25      
+[25] httpuv_1.5.2     broom_0.5.2      Rcpp_1.0.3       promises_1.1.0  
+[29] backports_1.1.5  scales_1.0.0     jsonlite_1.6     fs_1.3.1        
+[33] hms_0.5.1        digest_0.6.23    stringi_1.4.3    grid_3.6.3      
+[37] rprojroot_1.3-2  cli_1.1.0        tools_3.6.3      magrittr_1.5    
+[41] lazyeval_0.2.2   crayon_1.3.4     whisker_0.4      pkgconfig_2.0.3 
+[45] xml2_1.2.2       lubridate_1.7.4  assertthat_0.2.1 rmarkdown_1.16  
+[49] httr_1.4.1       rstudioapi_0.10  R6_2.4.0         nlme_3.1-149    
+[53] git2r_0.26.1     compiler_3.6.3  </code></pre>
+</div>
+</div>
+
+
+<!-- Adjust MathJax settings so that all math formulae are shown using
+TeX fonts only; see
+http://docs.mathjax.org/en/latest/configuration.html.  This will make
+the presentation more consistent at the cost of the webpage sometimes
+taking slightly longer to load. Note that this only works because the
+footer is added to webpages before the MathJax javascript. -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    "HTML-CSS": { availableFonts: ["TeX"] }
+  });
+</script>
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

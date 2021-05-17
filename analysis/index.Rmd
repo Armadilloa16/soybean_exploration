@@ -23,3 +23,6 @@ interactions between genes:
 
 3. Begin exploring some of the ideas around how component analysis could be applied to the problem: 
 [link](NBS_component_analysis.html)
+
+4. "Traditional" pairwise interaction tests: [link](NBS_pairwise_tests.html)
+
